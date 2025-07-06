@@ -999,6 +999,3 @@ else:
             "Your CSV file should contain these exact column names: Date, Open, High, Low, Close, Volume"
         )
 
-# Footer
-st.markdown("---")
-st.markdown("Built with ❤️ using Streamlit, Backtrader, and Python")
