@@ -84,14 +84,34 @@ st.markdown("""
     background: linear-gradient(135deg, #2a2d3a 0%, #3a3d4a 100%);
     border: 1px solid #4a4d5a;
     border-radius: 12px;
-    padding: 20px;
+    padding: 16px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease;
+    min-height: 100px;
 }
 
 .stMetric:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.stMetric [data-testid="metric-container"] {
+    text-align: center;
+}
+
+.stMetric [data-testid="metric-container"] > div:first-child {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #a0a3b5;
+}
+
+.stMetric [data-testid="metric-container"] > div:last-child {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ffffff;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .stTabs [data-baseweb="tab-list"] {
@@ -263,8 +283,8 @@ if data_source == "Yahoo Finance":
         end_date = datetime.now()
         
         # Show the preset dates (read-only display)
-        st.sidebar.success(f"**Start:** {start_date.strftime('%Y-%m-%d')}")
-        st.sidebar.success(f"**End:** {end_date.strftime('%Y-%m-%d')}")
+        st.sidebar.success(f"**Start:** {start_date.strftime('%b %d, %Y')}")
+        st.sidebar.success(f"**End:** {end_date.strftime('%b %d, %Y')}")
     else:
         # Custom date selection
         col1, col2 = st.sidebar.columns(2)
@@ -495,19 +515,24 @@ if data is not None and not data.empty:
     st.markdown('<div class="performance-card">', unsafe_allow_html=True)
     st.markdown("### 📊 Data Overview")
     
-    # Enhanced metrics display
-    col1, col2, col3, col4, col5 = st.columns(5)
+    # Enhanced metrics display with better date formatting and responsive layout
+    col1, col2, col3, col4, col5 = st.columns([1, 1, 1.2, 1.2, 1])
     with col1:
         st.metric("📈 Ticker", ticker)
     with col2:
         st.metric("📊 Data Points", f"{len(data):,}")
     with col3:
-        st.metric("📅 Start Date", data.index[0].strftime('%Y-%m-%d'))
+        start_date_formatted = data.index[0].strftime('%b %d, %Y')
+        st.metric("📅 Start Date", start_date_formatted)
     with col4:
-        st.metric("📅 End Date", data.index[-1].strftime('%Y-%m-%d'))
+        end_date_formatted = data.index[-1].strftime('%b %d, %Y')
+        st.metric("📅 End Date", end_date_formatted)
     with col5:
         latest_price = data['Close'].iloc[-1]
         st.metric("💰 Latest Price", f"${latest_price:.2f}")
+    
+    # Add some spacing
+    st.markdown("<br>", unsafe_allow_html=True)
     
     st.markdown('</div>', unsafe_allow_html=True)
 
