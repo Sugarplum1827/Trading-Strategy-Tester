@@ -165,7 +165,11 @@ No environment variables are required for basic functionality. All configuration
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the Apache 2.0 License - see the LICENSE file for details.
+
+## 🚀 Working Application
+
+https://trading-strategy-tester.streamlit.app
 
 ## ⚠️ Disclaimer
 
