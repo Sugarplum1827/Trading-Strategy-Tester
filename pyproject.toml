@@ -11,5 +11,6 @@ dependencies = [
     "plotly>=6.2.0",
     "scipy>=1.16.0",
     "streamlit>=1.46.1",
+    "trafilatura>=2.0.0",
     "yfinance>=0.2.64",
 ]

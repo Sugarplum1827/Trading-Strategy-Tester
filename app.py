@@ -198,12 +198,16 @@ h1, h2, h3, h4, h5, h6 {
 </style>
 """, unsafe_allow_html=True)
 
-# Data source selection
+# Enhanced data source selection
+st.sidebar.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
+st.sidebar.markdown("### 📊 Data Source")
+
 data_source = st.sidebar.radio(
-    "Data Source", ["Yahoo Finance", "Upload CSV"],
-    help=
-    "Choose between fetching data from Yahoo Finance or uploading your own CSV file"
+    "Choose Data Source:", 
+    ["Predefined Markets", "Custom Yahoo Finance", "Upload CSV"],
+    help="Select from predefined markets, enter custom tickers, or upload your own data"
 )
+st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
 # Initialize session state
 if 'backtest_results' not in st.session_state:
@@ -212,54 +216,123 @@ if 'backtest_results' not in st.session_state:
 # Initialize ticker variable
 ticker = "NONE"
 
-if data_source == "Yahoo Finance":
-    # Top 10 popular tickers
-    top_tickers = {
-        "AAPL": "Apple Inc.",
-        "MSFT": "Microsoft Corp.", 
-        "GOOGL": "Alphabet Inc.",
-        "AMZN": "Amazon.com Inc.",
-        "TSLA": "Tesla Inc.",
-        "NVDA": "NVIDIA Corp.",
-        "META": "Meta Platforms Inc.",
-        "NFLX": "Netflix Inc.",
-        "ORCL": "Oracle Corp.",
-        "AMD": "Advanced Micro Devices"
+if data_source == "Predefined Markets":
+    # Comprehensive predefined markets
+    predefined_markets = {
+        "US Stocks": {
+            "AAPL": "Apple Inc.",
+            "MSFT": "Microsoft Corp.", 
+            "GOOGL": "Alphabet Inc.",
+            "AMZN": "Amazon.com Inc.",
+            "TSLA": "Tesla Inc.",
+            "NVDA": "NVIDIA Corp.",
+            "META": "Meta Platforms Inc.",
+            "NFLX": "Netflix Inc.",
+            "JPM": "JPMorgan Chase & Co.",
+            "V": "Visa Inc."
+        },
+        "Market Indices": {
+            "SPY": "SPDR S&P 500 ETF",
+            "QQQ": "Invesco QQQ Trust",
+            "IWM": "iShares Russell 2000 ETF",
+            "VTI": "Vanguard Total Stock Market ETF",
+            "VOO": "Vanguard S&P 500 ETF",
+            "DIA": "SPDR Dow Jones Industrial Average ETF",
+            "VEA": "Vanguard FTSE Developed Markets ETF",
+            "VWO": "Vanguard FTSE Emerging Markets ETF",
+            "SCHD": "Schwab US Dividend Equity ETF",
+            "VYM": "Vanguard High Dividend Yield ETF"
+        },
+        "Cryptocurrency": {
+            "BTC-USD": "Bitcoin",
+            "ETH-USD": "Ethereum",
+            "ADA-USD": "Cardano",
+            "DOT-USD": "Polkadot",
+            "LINK-USD": "Chainlink",
+            "LTC-USD": "Litecoin",
+            "XRP-USD": "XRP",
+            "BCH-USD": "Bitcoin Cash",
+            "SOL-USD": "Solana",
+            "MATIC-USD": "Polygon"
+        },
+        "Forex Pairs": {
+            "EURUSD=X": "EUR/USD",
+            "GBPUSD=X": "GBP/USD",
+            "USDJPY=X": "USD/JPY",
+            "AUDUSD=X": "AUD/USD",
+            "USDCAD=X": "USD/CAD",
+            "USDCHF=X": "USD/CHF",
+            "NZDUSD=X": "NZD/USD",
+            "EURGBP=X": "EUR/GBP",
+            "EURJPY=X": "EUR/JPY",
+            "GBPJPY=X": "GBP/JPY"
+        },
+        "Commodities": {
+            "GC=F": "Gold Futures",
+            "SI=F": "Silver Futures",
+            "CL=F": "Crude Oil Futures",
+            "NG=F": "Natural Gas Futures",
+            "HG=F": "Copper Futures",
+            "ZC=F": "Corn Futures",
+            "ZS=F": "Soybean Futures",
+            "ZW=F": "Wheat Futures",
+            "KC=F": "Coffee Futures",
+            "SB=F": "Sugar Futures"
+        }
     }
     
-    # Enhanced ticker selection with popular choices
+    # Enhanced market selection with categories
     st.sidebar.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
-    st.sidebar.markdown("### 📊 Stock Selection")
+    st.sidebar.markdown("### 🏪 Market Selection")
     
-    # Radio button for selection method
-    selection_method = st.sidebar.radio(
-        "Choose selection method:",
-        ["Popular Stocks", "Custom Ticker"],
-        help="Select from top 10 popular stocks or enter a custom ticker"
+    # Market category selection
+    market_category = st.sidebar.selectbox(
+        "Choose Market Category:",
+        options=list(predefined_markets.keys()),
+        help="Select from different asset categories"
     )
     
-    if selection_method == "Popular Stocks":
-        # Create a nice grid of popular tickers
-        ticker = st.sidebar.selectbox(
-            "Select Popular Stock:",
-            options=list(top_tickers.keys()),
-            format_func=lambda x: f"{x} - {top_tickers[x]}",
-            help="Choose from the most popular stocks"
-        )
-        
-        # Show additional info about selected ticker
-        if ticker in top_tickers:
-            st.sidebar.info(f"Selected: {ticker} - {top_tickers[ticker]}")
-    else:
-        # Custom ticker input
-        ticker = st.sidebar.text_input(
-            "Custom Ticker Symbol:",
-            value="AAPL",
-            help="Enter any stock ticker symbol (e.g., SPY, QQQ, SHOP)"
-        ).upper()
+    # Asset selection within category
+    available_assets = predefined_markets[market_category]
+    ticker = st.sidebar.selectbox(
+        f"Select {market_category} Asset:",
+        options=list(available_assets.keys()),
+        format_func=lambda x: f"{x} - {available_assets[x]}",
+        help=f"Choose from available {market_category.lower()}"
+    )
+    
+    # Show selected asset info
+    if ticker in available_assets:
+        st.sidebar.success(f"**Selected:** {ticker} - {available_assets[ticker]}")
     
     st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
+elif data_source == "Custom Yahoo Finance":
+    # Custom ticker input with enhanced features
+    st.sidebar.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
+    st.sidebar.markdown("### 🎯 Custom Ticker")
+    
+    ticker = st.sidebar.text_input(
+        "Enter Ticker Symbol:",
+        value="AAPL",
+        help="Enter any Yahoo Finance supported ticker (stocks, ETFs, forex, crypto, etc.)",
+        placeholder="e.g., AAPL, BTC-USD, EURUSD=X, GC=F"
+    ).upper()
+    
+    # Add ticker examples
+    st.sidebar.markdown("""
+    **Examples:**
+    - Stocks: AAPL, TSLA, MSFT
+    - Crypto: BTC-USD, ETH-USD
+    - Forex: EURUSD=X, GBPUSD=X
+    - Futures: GC=F, CL=F
+    - ETFs: SPY, QQQ, VTI
+    """)
+    
+    st.sidebar.markdown('</div>', unsafe_allow_html=True)
+
+# Date range section (common for all Yahoo Finance sources)
+if data_source in ["Predefined Markets", "Custom Yahoo Finance"]:
     # Date range section with enhanced styling
     st.sidebar.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
     st.sidebar.markdown("### 📅 Date Range")
@@ -300,13 +373,16 @@ if data_source == "Yahoo Finance":
     
     st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
-    # Fetch data
+    # Enhanced data fetching with better error handling
     @st.cache_data
     def fetch_data(ticker, start, end):
         try:
-            data = yf.download(ticker, start=start, end=end)
+            # Add progress indicator
+            with st.spinner(f"Fetching data for {ticker}..."):
+                data = yf.download(ticker, start=start, end=end, progress=False)
+                
             if data is None or data.empty:
-                st.error(f"No data found for ticker {ticker}")
+                st.error(f"No data found for ticker {ticker}. Please check the symbol and try again.")
                 return None
 
             # Fix MultiIndex columns from yfinance
@@ -316,45 +392,102 @@ if data_source == "Yahoo Finance":
             # Ensure we have the required columns
             required_columns = ['Open', 'High', 'Low', 'Close', 'Volume']
             if not all(col in data.columns for col in required_columns):
-                st.error(
-                    f"Missing required columns. Available: {list(data.columns)}"
-                )
+                st.error(f"Missing required columns. Available: {list(data.columns)}")
                 return None
 
+            # Clean the data
+            data = data.dropna()
+            if len(data) < 10:
+                st.warning(f"Limited data available ({len(data)} rows). Results may not be reliable.")
+            
             return data
         except Exception as e:
-            st.error(f"Error fetching data: {str(e)}")
+            st.error(f"Error fetching data for {ticker}: {str(e)}")
+            st.info("Try checking the ticker symbol or selecting a different date range.")
             return None
 
     data = fetch_data(ticker, start_date, end_date)
 
 else:  # Upload CSV
+    st.sidebar.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
+    st.sidebar.markdown("### 📁 CSV File Upload")
+    
     uploaded_file = st.sidebar.file_uploader(
-        "Upload CSV File",
+        "Upload CSV File:",
         type=['csv'],
-        help=
-        "Upload a CSV file with columns: Date, Open, High, Low, Close, Volume")
+        help="Upload a CSV file with columns: Date, Open, High, Low, Close, Volume"
+    )
+    
+    # CSV format requirements
+    st.sidebar.markdown("""
+    **Required CSV Format:**
+    - Date (YYYY-MM-DD)
+    - Open (number)
+    - High (number)  
+    - Low (number)
+    - Close (number)
+    - Volume (number)
+    """)
+    
+    # Sample data download option
+    if st.sidebar.button("📥 Download Sample CSV"):
+        sample_data = {
+            'Date': ['2023-01-01', '2023-01-02', '2023-01-03'],
+            'Open': [100.0, 101.0, 102.0],
+            'High': [105.0, 106.0, 107.0],
+            'Low': [99.0, 100.0, 101.0],
+            'Close': [104.0, 105.0, 106.0],
+            'Volume': [1000000, 1100000, 1200000]
+        }
+        sample_df = pd.DataFrame(sample_data)
+        csv = sample_df.to_csv(index=False)
+        st.sidebar.download_button(
+            label="Download sample.csv",
+            data=csv,
+            file_name="sample_trading_data.csv",
+            mime="text/csv"
+        )
 
     if uploaded_file is not None:
         try:
             data = pd.read_csv(uploaded_file)
-            # Ensure proper column names
-            expected_columns = [
-                'Date', 'Open', 'High', 'Low', 'Close', 'Volume'
-            ]
-            if not all(col in data.columns for col in expected_columns):
-                st.error(f"CSV must contain columns: {expected_columns}")
+            
+            # Enhanced validation
+            expected_columns = ['Date', 'Open', 'High', 'Low', 'Close', 'Volume']
+            missing_columns = [col for col in expected_columns if col not in data.columns]
+            
+            if missing_columns:
+                st.error(f"Missing columns: {missing_columns}")
+                st.info(f"Available columns: {list(data.columns)}")
                 data = None
             else:
+                # Process and validate data
                 data['Date'] = pd.to_datetime(data['Date'])
                 data.set_index('Date', inplace=True)
                 data = data.sort_index()
-                ticker = "CUSTOM"
+                
+                # Check for valid numeric data
+                numeric_columns = ['Open', 'High', 'Low', 'Close', 'Volume']
+                for col in numeric_columns:
+                    data[col] = pd.to_numeric(data[col], errors='coerce')
+                
+                # Remove invalid rows
+                data = data.dropna()
+                
+                if len(data) == 0:
+                    st.error("No valid data rows found after processing.")
+                    data = None
+                else:
+                    ticker = f"CUSTOM ({uploaded_file.name})"
+                    st.sidebar.success(f"✅ Loaded {len(data)} rows of data")
+                    
         except Exception as e:
             st.error(f"Error reading CSV file: {str(e)}")
             data = None
     else:
         data = None
+    
+    st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
 # Strategy selection with enhanced design
 st.sidebar.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
