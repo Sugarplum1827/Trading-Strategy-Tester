@@ -23,64 +23,160 @@ st.set_page_config(page_title="Trading Strategy Backtester",
                    layout="wide",
                    initial_sidebar_state="expanded")
 
-# Main title
-st.title("🚀 Comprehensive Trading Strategy Backtester")
-st.markdown("---")
+# Enhanced header with better styling
+st.markdown("""
+<div style="text-align: center; padding: 2rem 0; background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%); border-radius: 10px; margin-bottom: 2rem;">
+    <h1 style="color: white; font-size: 3rem; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+        🚀 Trading Strategy Backtester
+    </h1>
+    <p style="color: #e0e0e0; font-size: 1.2rem; margin: 0.5rem 0 0 0;">
+        Professional-grade backtesting with advanced analytics
+    </p>
+</div>
+""", unsafe_allow_html=True)
 
 # Sidebar for user inputs
 st.sidebar.header("🔧 Configuration")
 
-# Apply dark theme only
+# Enhanced styling with modern design
 st.markdown("""
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 .stApp {
-    background-color: #0e1117;
+    background: linear-gradient(135deg, #0a0e1a 0%, #1a1f2e 50%, #2a2d3a 100%);
     color: #ffffff;
+    font-family: 'Inter', sans-serif;
 }
+
 .stSidebar {
-    background-color: #262730;
+    background: linear-gradient(180deg, #1a1f2e 0%, #262730 100%);
+    border-right: 2px solid #3a3d4a;
 }
+
 .stSidebar .stSelectbox > div > div,
 .stSidebar .stTextInput > div > div,
 .stSidebar .stNumberInput > div > div,
 .stSidebar .stSlider > div > div {
     background-color: #3a3d4a;
     color: #ffffff;
-}
-.stDataFrame {
-    background-color: #262730;
-}
-.stMetric {
-    background-color: #262730;
-    border: 1px solid #3a3d4a;
+    border: 1px solid #4a4d5a;
     border-radius: 8px;
-    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
 }
+
+.stSidebar .stSelectbox > div > div:hover,
+.stSidebar .stTextInput > div > div:hover,
+.stSidebar .stNumberInput > div > div:hover {
+    border-color: #6366f1;
+    box-shadow: 0 4px 8px rgba(99, 102, 241, 0.2);
+}
+
+.stDataFrame {
+    background-color: #1a1f2e;
+    border-radius: 12px;
+    border: 1px solid #3a3d4a;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.stMetric {
+    background: linear-gradient(135deg, #2a2d3a 0%, #3a3d4a 100%);
+    border: 1px solid #4a4d5a;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.stMetric:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
 .stTabs [data-baseweb="tab-list"] {
-    background-color: #262730;
+    background: linear-gradient(90deg, #1a1f2e 0%, #262730 100%);
+    border-radius: 12px;
+    padding: 8px;
 }
+
 .stTabs [data-baseweb="tab"] {
-    background-color: #3a3d4a;
-    color: #ffffff;
+    background-color: transparent;
+    color: #a0a3b5;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
 }
+
 .stTabs [aria-selected="true"] {
-    background-color: #ff6b6b;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
 }
+
 .stButton > button {
-    background-color: #ff6b6b;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
     color: #ffffff;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 12px 24px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(99, 102, 241, 0.2);
 }
+
 .stButton > button:hover {
-    background-color: #ff5252;
+    background: linear-gradient(135deg, #5856eb 0%, #7c3aed 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(99, 102, 241, 0.3);
 }
+
+.ticker-card {
+    background: linear-gradient(135deg, #2a2d3a 0%, #3a3d4a 100%);
+    border: 1px solid #4a4d5a;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 8px 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.ticker-card:hover {
+    background: linear-gradient(135deg, #3a3d4a 0%, #4a4d5a 100%);
+    border-color: #6366f1;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(99, 102, 241, 0.2);
+}
+
+.ticker-selected {
+    border-color: #6366f1 !important;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+    box-shadow: 0 6px 12px rgba(99, 102, 241, 0.3) !important;
+}
+
 h1, h2, h3, h4, h5, h6 {
     color: #ffffff;
+    font-family: 'Inter', sans-serif;
+}
+
+.sidebar-section {
+    background: linear-gradient(135deg, #2a2d3a 0%, #3a3d4a 100%);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 16px 0;
+    border: 1px solid #4a4d5a;
+}
+
+.performance-card {
+    background: linear-gradient(135deg, #1a1f2e 0%, #2a2d3a 100%);
+    border: 1px solid #3a3d4a;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 10px 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 </style>
-""",
-            unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # Data source selection
 data_source = st.sidebar.radio(
@@ -97,23 +193,92 @@ if 'backtest_results' not in st.session_state:
 ticker = "NONE"
 
 if data_source == "Yahoo Finance":
-    # Ticker input
-    ticker = st.sidebar.text_input(
-        "Ticker Symbol",
-        value="AAPL",
-        help="Enter stock ticker symbol (e.g., AAPL, TSLA, GOOGL)").upper()
+    # Top 10 popular tickers
+    top_tickers = {
+        "AAPL": "Apple Inc.",
+        "MSFT": "Microsoft Corp.", 
+        "GOOGL": "Alphabet Inc.",
+        "AMZN": "Amazon.com Inc.",
+        "TSLA": "Tesla Inc.",
+        "NVDA": "NVIDIA Corp.",
+        "META": "Meta Platforms Inc.",
+        "NFLX": "Netflix Inc.",
+        "ORCL": "Oracle Corp.",
+        "AMD": "Advanced Micro Devices"
+    }
+    
+    # Enhanced ticker selection with popular choices
+    st.sidebar.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
+    st.sidebar.markdown("### 📊 Stock Selection")
+    
+    # Radio button for selection method
+    selection_method = st.sidebar.radio(
+        "Choose selection method:",
+        ["Popular Stocks", "Custom Ticker"],
+        help="Select from top 10 popular stocks or enter a custom ticker"
+    )
+    
+    if selection_method == "Popular Stocks":
+        # Create a nice grid of popular tickers
+        ticker = st.sidebar.selectbox(
+            "Select Popular Stock:",
+            options=list(top_tickers.keys()),
+            format_func=lambda x: f"{x} - {top_tickers[x]}",
+            help="Choose from the most popular stocks"
+        )
+        
+        # Show additional info about selected ticker
+        if ticker in top_tickers:
+            st.sidebar.info(f"Selected: {ticker} - {top_tickers[ticker]}")
+    else:
+        # Custom ticker input
+        ticker = st.sidebar.text_input(
+            "Custom Ticker Symbol:",
+            value="AAPL",
+            help="Enter any stock ticker symbol (e.g., SPY, QQQ, SHOP)"
+        ).upper()
+    
+    st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
-    # Date range
-    col1, col2 = st.sidebar.columns(2)
-    with col1:
-        start_date = st.date_input(
-            "Start Date",
-            value=datetime.now() - timedelta(days=365 * 2),
-            help="Select the start date for backtesting")
-    with col2:
-        end_date = st.date_input("End Date",
-                                 value=datetime.now(),
-                                 help="Select the end date for backtesting")
+    # Date range section with enhanced styling
+    st.sidebar.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
+    st.sidebar.markdown("### 📅 Date Range")
+    
+    # Quick date range presets
+    preset_range = st.sidebar.selectbox(
+        "Quick Date Presets:",
+        ["Custom", "Last 1 Year", "Last 2 Years", "Last 3 Years", "Last 5 Years", "Last 6 Months"],
+        help="Choose a preset date range or select custom"
+    )
+    
+    if preset_range != "Custom":
+        days_map = {
+            "Last 6 Months": 180,
+            "Last 1 Year": 365,
+            "Last 2 Years": 365 * 2,
+            "Last 3 Years": 365 * 3,
+            "Last 5 Years": 365 * 5
+        }
+        start_date = datetime.now() - timedelta(days=days_map[preset_range])
+        end_date = datetime.now()
+        
+        # Show the preset dates (read-only display)
+        st.sidebar.success(f"**Start:** {start_date.strftime('%Y-%m-%d')}")
+        st.sidebar.success(f"**End:** {end_date.strftime('%Y-%m-%d')}")
+    else:
+        # Custom date selection
+        col1, col2 = st.sidebar.columns(2)
+        with col1:
+            start_date = st.date_input(
+                "Start Date",
+                value=datetime.now() - timedelta(days=365 * 2),
+                help="Select the start date for backtesting")
+        with col2:
+            end_date = st.date_input("End Date",
+                                     value=datetime.now(),
+                                     help="Select the end date for backtesting")
+    
+    st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
     # Fetch data
     @st.cache_data
@@ -171,33 +336,63 @@ else:  # Upload CSV
     else:
         data = None
 
-# Strategy selection
-st.sidebar.subheader("📊 Strategy Selection")
+# Strategy selection with enhanced design
+st.sidebar.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
+st.sidebar.markdown("### 📊 Strategy Selection")
+
+# Strategy descriptions for better UX
+strategy_descriptions = {
+    "SMA Crossover": "🔄 Simple Moving Average crossover signals",
+    "EMA Crossover": "⚡ Exponential Moving Average with recent price emphasis", 
+    "RSI": "📈 Relative Strength Index momentum strategy",
+    "MACD": "📊 Moving Average Convergence Divergence",
+    "Bollinger Bands": "🎯 Volatility-based mean reversion",
+    "Stochastic": "🔄 Overbought/oversold momentum indicator",
+    "Williams %R": "📉 Williams Percent Range momentum"
+}
+
 strategy_type = st.sidebar.selectbox(
-    "Choose Strategy", [
-        "SMA Crossover", "EMA Crossover", "RSI", "MACD", "Bollinger Bands",
-        "Stochastic", "Williams %R"
-    ],
-    help="Select the trading strategy to backtest")
+    "Choose Strategy:",
+    options=list(strategy_descriptions.keys()),
+    format_func=lambda x: strategy_descriptions[x],
+    help="Select the trading strategy to backtest"
+)
 
-# Strategy parameters
-st.sidebar.subheader("⚙️ Strategy Parameters")
+# Show strategy description
+if strategy_type:
+    st.sidebar.info(f"**Selected:** {strategy_descriptions[strategy_type]}")
 
-# Common parameters
-initial_capital = st.sidebar.number_input(
-    "Initial Capital ($)",
-    min_value=1000,
-    max_value=10000000,
-    value=100000,
-    step=1000,
-    help="Starting capital for the backtest")
+st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
-commission = st.sidebar.number_input("Commission (%)",
-                                     min_value=0.0,
-                                     max_value=5.0,
-                                     value=0.1,
-                                     step=0.01,
-                                     help="Commission per trade as percentage")
+# Trading parameters section
+st.sidebar.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
+st.sidebar.markdown("### 💰 Trading Parameters")
+
+# Enhanced capital and commission inputs
+col1, col2 = st.sidebar.columns(2)
+with col1:
+    initial_capital = st.sidebar.number_input(
+        "Initial Capital ($)",
+        min_value=1000,
+        max_value=10000000,
+        value=100000,
+        step=1000,
+        help="Starting capital for the backtest")
+
+with col2:
+    commission = st.sidebar.number_input(
+        "Commission (%)",
+        min_value=0.0,
+        max_value=5.0,
+        value=0.1,
+        step=0.01,
+        help="Commission per trade as percentage")
+
+st.sidebar.markdown('</div>', unsafe_allow_html=True)
+
+# Strategy-specific parameters section
+st.sidebar.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
+st.sidebar.markdown("### ⚙️ Strategy Parameters")
 
 # Strategy-specific parameters
 strategy_params = {}
@@ -248,23 +443,31 @@ elif strategy_type == "Williams %R":
     strategy_params['wr_oversold'] = st.sidebar.slider("Oversold Level", -90,
                                                        -70, -80)
 
-# Risk management parameters
-st.sidebar.subheader("🛡️ Risk Management")
-stop_loss = st.sidebar.number_input(
-    "Stop Loss (%)",
-    min_value=0.0,
-    max_value=50.0,
-    value=5.0,
-    step=0.5,
-    help="Stop loss as percentage of entry price")
+st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
-take_profit = st.sidebar.number_input(
-    "Take Profit (%)",
-    min_value=0.0,
-    max_value=100.0,
-    value=10.0,
-    step=0.5,
-    help="Take profit as percentage of entry price")
+# Risk management parameters with enhanced styling
+st.sidebar.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
+st.sidebar.markdown("### 🛡️ Risk Management")
+
+# Risk management in columns for better layout
+col1, col2 = st.sidebar.columns(2)
+with col1:
+    stop_loss = st.sidebar.number_input(
+        "Stop Loss (%)",
+        min_value=0.0,
+        max_value=50.0,
+        value=5.0,
+        step=0.5,
+        help="Stop loss as percentage of entry price")
+
+with col2:
+    take_profit = st.sidebar.number_input(
+        "Take Profit (%)",
+        min_value=0.0,
+        max_value=100.0,
+        value=10.0,
+        step=0.5,
+        help="Take profit as percentage of entry price")
 
 position_size = st.sidebar.slider(
     "Position Size (%)",
@@ -274,64 +477,107 @@ position_size = st.sidebar.slider(
     step=5,
     help="Percentage of available capital to use per trade")
 
-# Run backtest button
-run_backtest = st.sidebar.button("🚀 Run Backtest", type="primary")
+st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
-# Main content area
+# Enhanced run button with better styling
+st.sidebar.markdown('<div style="padding: 20px 0;">', unsafe_allow_html=True)
+run_backtest = st.sidebar.button(
+    "🚀 Start Backtest Analysis", 
+    type="primary",
+    use_container_width=True,
+    help="Execute the backtesting strategy with current parameters"
+)
+st.sidebar.markdown('</div>', unsafe_allow_html=True)
+
+# Main content area with enhanced design
 if data is not None and not data.empty:
-    # Display basic data info
-    col1, col2, col3, col4 = st.columns(4)
+    # Enhanced data overview section
+    st.markdown('<div class="performance-card">', unsafe_allow_html=True)
+    st.markdown("### 📊 Data Overview")
+    
+    # Enhanced metrics display
+    col1, col2, col3, col4, col5 = st.columns(5)
     with col1:
-        st.metric("Data Points", len(data))
+        st.metric("📈 Ticker", ticker)
     with col2:
-        try:
-            start_date_str = pd.to_datetime(data.index[0]).strftime('%Y-%m-%d')
-        except Exception as e:
-            st.warning(f"Failed to parse start date: {e}")
-            start_date_str = str(data.index[0])[:10]
+        st.metric("📊 Data Points", f"{len(data):,}")
     with col3:
-        try:
-            end_date_value = pd.to_datetime(data.index[-1])
-            end_date_str = end_date_value.strftime('%Y-%m-%d')
-        except Exception as e:
-            st.warning(f"Could not format end date: {e}")
-            end_date_str = str(data.index[-1])[:10]
-        st.write("**End Date:**", end_date_str)
+        st.metric("📅 Start Date", data.index[0].strftime('%Y-%m-%d'))
     with col4:
-        if data_source == "Yahoo Finance":
-            st.metric("Ticker", ticker)
-        else:
-            st.metric("Source", "Custom CSV")
+        st.metric("📅 End Date", data.index[-1].strftime('%Y-%m-%d'))
+    with col5:
+        latest_price = data['Close'].iloc[-1]
+        st.metric("💰 Latest Price", f"${latest_price:.2f}")
+    
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    # Show raw data
-    with st.expander("📋 Raw Data Preview"):
-        st.dataframe(data.head(10))
+    # Enhanced data preview section
+    st.markdown('<div class="performance-card">', unsafe_allow_html=True)
+    with st.expander("📋 Raw Data Preview", expanded=False):
+        # Show basic statistics
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown("**📊 Price Statistics**")
+            price_stats = data['Close'].describe()
+            st.write(f"**Min:** ${price_stats['min']:.2f}")
+            st.write(f"**Max:** ${price_stats['max']:.2f}")
+            st.write(f"**Mean:** ${price_stats['mean']:.2f}")
+            st.write(f"**Std:** ${price_stats['std']:.2f}")
+        
+        with col2:
+            st.markdown("**📈 Returns Analysis**")
+            returns = data['Close'].pct_change().dropna()
+            st.write(f"**Daily Return Mean:** {returns.mean():.4f}")
+            st.write(f"**Daily Return Std:** {returns.std():.4f}")
+            st.write(f"**Best Day:** {returns.max():.4f}")
+            st.write(f"**Worst Day:** {returns.min():.4f}")
+        
+        # Data table
+        st.markdown("**🗂️ Sample Data**")
+        st.dataframe(data.head(10), use_container_width=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    # Price chart
-    st.subheader("📈 Price Chart")
+    # Enhanced price chart
+    st.markdown('<div class="performance-card">', unsafe_allow_html=True)
+    st.markdown("### 📈 Interactive Price Chart")
+    
+    # Create enhanced candlestick chart
     fig = go.Figure()
-    fig.add_trace(
-        go.Scatter(x=data.index,
-                   y=data['Close'],
-                   mode='lines',
-                   name='Close Price',
-                   line=dict(color='#00d4aa')))
+    
+    # Add candlestick chart
+    fig.add_trace(go.Candlestick(
+        x=data.index,
+        open=data['Open'],
+        high=data['High'],
+        low=data['Low'],
+        close=data['Close'],
+        name="OHLC",
+        increasing=dict(line=dict(color='#00d4aa'), fillcolor='#00d4aa'),
+        decreasing=dict(line=dict(color='#ff6b6b'), fillcolor='#ff6b6b')
+    ))
 
-    # Apply theme-specific layout
-    chart_bg = '#0e1117'
+    # Apply enhanced theme
+    chart_bg = '#1a1f2e'
     text_color = '#ffffff'
     grid_color = '#3a3d4a'
 
-    fig.update_layout(title=f"{ticker} Price Chart",
-                      xaxis_title="Date",
-                      yaxis_title="Price ($)",
-                      height=400,
-                      plot_bgcolor=chart_bg,
-                      paper_bgcolor=chart_bg,
-                      font_color=text_color,
-                      xaxis=dict(gridcolor=grid_color),
-                      yaxis=dict(gridcolor=grid_color))
+    fig.update_layout(
+        title=f"{ticker} - OHLC Candlestick Chart",
+        xaxis_title="Date",
+        yaxis_title="Price ($)",
+        height=500,
+        plot_bgcolor=chart_bg,
+        paper_bgcolor=chart_bg,
+        font_color=text_color,
+        xaxis=dict(gridcolor=grid_color, showgrid=True),
+        yaxis=dict(gridcolor=grid_color, showgrid=True),
+        xaxis_rangeslider_visible=False,
+        showlegend=True,
+        legend=dict(bgcolor='rgba(0,0,0,0)', font=dict(color=text_color))
+    )
+    
     st.plotly_chart(fig, use_container_width=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
     # Run backtest
     if run_backtest:
