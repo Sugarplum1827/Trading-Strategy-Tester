@@ -200,13 +200,22 @@ h1, h2, h3, h4, h5, h6 {
 
 # Enhanced data source selection
 st.sidebar.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
-st.sidebar.markdown("### 📊 Data Source")
+st.sidebar.markdown("### 📊 Data Source Selection")
 
 data_source = st.sidebar.radio(
     "Choose Data Source:", 
     ["Predefined Markets", "Custom Yahoo Finance", "Upload CSV"],
     help="Select from predefined markets, enter custom tickers, or upload your own data"
 )
+
+# Show current data source status
+if data_source == "Predefined Markets":
+    st.sidebar.success("🏪 Using Yahoo Finance with predefined markets")
+elif data_source == "Custom Yahoo Finance":
+    st.sidebar.success("🎯 Using Yahoo Finance with custom ticker")
+else:
+    st.sidebar.success("📁 Using custom CSV file upload")
+
 st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
 # Initialize session state
@@ -648,8 +657,8 @@ if data is not None and not data.empty:
     st.markdown('<div class="performance-card">', unsafe_allow_html=True)
     st.markdown("### 📊 Data Overview")
     
-    # Top row: Ticker, Data Points, Latest Price
-    col1, col2, col3 = st.columns([1, 1, 1])
+    # Top row: Ticker, Data Points, Latest Price, Data Source
+    col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
     with col1:
         st.metric("📈 Ticker", ticker)
     with col2:
@@ -657,6 +666,17 @@ if data is not None and not data.empty:
     with col3:
         latest_price = data['Close'].iloc[-1]
         st.metric("💰 Latest Price", f"${latest_price:.2f}")
+    with col4:
+        # Show detailed data source information
+        if data_source == "Predefined Markets":
+            if 'market_category' in locals():
+                st.metric("🏪 Data Source", f"Yahoo Finance ({market_category})")
+            else:
+                st.metric("🏪 Data Source", "Yahoo Finance")
+        elif data_source == "Custom Yahoo Finance":
+            st.metric("🎯 Data Source", "Yahoo Finance (Custom)")
+        else:
+            st.metric("📁 Data Source", "Custom CSV")
     
     # Add spacing between rows
     st.markdown("<div style='margin: 15px 0;'></div>", unsafe_allow_html=True)
@@ -669,6 +689,22 @@ if data is not None and not data.empty:
     with col5:
         end_date_formatted = data.index[-1].strftime('%b %d, %Y')
         st.metric("📅 End Date", end_date_formatted)
+    
+    # Data source details panel
+    st.markdown("<div style='margin: 20px 0;'></div>", unsafe_allow_html=True)
+    
+    # Enhanced data source information
+    if data_source == "Predefined Markets":
+        if 'market_category' in locals() and 'available_assets' in locals():
+            asset_name = available_assets.get(ticker, ticker)
+            st.info(f"📊 **Data Source:** Yahoo Finance | **Category:** {market_category} | **Asset:** {asset_name}")
+    elif data_source == "Custom Yahoo Finance":
+        st.info(f"🎯 **Data Source:** Yahoo Finance (Custom) | **Symbol:** {ticker}")
+    else:
+        if uploaded_file:
+            st.info(f"📁 **Data Source:** Custom CSV File | **Filename:** {uploaded_file.name}")
+        else:
+            st.info("📁 **Data Source:** Custom CSV File")
     
     # Add some spacing
     st.markdown("<br>", unsafe_allow_html=True)
