@@ -111,6 +111,7 @@ This is a comprehensive trading strategy backtesting application built with Stre
 ## Changelog
 
 - July 06, 2025. Initial setup
+- July 06, 2025. Added comprehensive README.md file with installation guide, usage instructions, and project documentation
 
 ## User Preferences
 
