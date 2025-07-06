@@ -515,21 +515,27 @@ if data is not None and not data.empty:
     st.markdown('<div class="performance-card">', unsafe_allow_html=True)
     st.markdown("### 📊 Data Overview")
     
-    # Enhanced metrics display with better date formatting and responsive layout
-    col1, col2, col3, col4, col5 = st.columns([1, 1, 1.2, 1.2, 1])
+    # Top row: Ticker, Data Points, Latest Price
+    col1, col2, col3 = st.columns([1, 1, 1])
     with col1:
         st.metric("📈 Ticker", ticker)
     with col2:
         st.metric("📊 Data Points", f"{len(data):,}")
     with col3:
-        start_date_formatted = data.index[0].strftime('%b %d, %Y')
-        st.metric("📅 Start Date", start_date_formatted)
-    with col4:
-        end_date_formatted = data.index[-1].strftime('%b %d, %Y')
-        st.metric("📅 End Date", end_date_formatted)
-    with col5:
         latest_price = data['Close'].iloc[-1]
         st.metric("💰 Latest Price", f"${latest_price:.2f}")
+    
+    # Add spacing between rows
+    st.markdown("<div style='margin: 15px 0;'></div>", unsafe_allow_html=True)
+    
+    # Bottom row: Date information with centered layout
+    col_spacer1, col4, col5, col_spacer2 = st.columns([0.5, 1, 1, 0.5])
+    with col4:
+        start_date_formatted = data.index[0].strftime('%b %d, %Y')
+        st.metric("📅 Start Date", start_date_formatted)
+    with col5:
+        end_date_formatted = data.index[-1].strftime('%b %d, %Y')
+        st.metric("📅 End Date", end_date_formatted)
     
     # Add some spacing
     st.markdown("<br>", unsafe_allow_html=True)
