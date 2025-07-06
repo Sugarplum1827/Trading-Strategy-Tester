@@ -170,26 +170,3 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## ⚠️ Disclaimer
 
 This software is for educational and research purposes only. It is not intended as financial advice. Trading and investing involve substantial risk of loss and are not suitable for all investors. Past performance does not guarantee future results.
-
-## 🆘 Support
-
-If you encounter any issues or have questions:
-
-1. Check the [Issues](../../issues) section for existing solutions
-2. Create a new issue with detailed information about your problem
-3. Include your Python version, operating system, and error messages
-
-## 🔮 Roadmap
-
-- [ ] Additional trading strategies (Ichimoku, Fibonacci, etc.)
-- [ ] Real-time trading capabilities
-- [ ] Machine learning-based strategies
-- [ ] Multi-asset portfolio backtesting
-- [ ] Advanced risk modeling
-- [ ] API integration for multiple data providers
-- [ ] Strategy optimization algorithms
-- [ ] Performance comparison tools
-
----
-
-Built with ❤️ using Python and Streamlit
