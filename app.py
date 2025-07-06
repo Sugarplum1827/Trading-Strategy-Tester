@@ -16,6 +16,7 @@ from strategies import (
 from utils import calculate_performance_metrics, create_equity_curve_plot, create_trade_summary
 from portfolio_optimizer import PortfolioOptimizer
 from risk_manager import RiskManager
+from backtrader_data_feed import PandasDataFeed
 
 # Page configuration
 st.set_page_config(
@@ -32,6 +33,36 @@ st.markdown("---")
 # Sidebar for user inputs
 st.sidebar.header("🔧 Configuration")
 
+# Theme toggle
+theme = st.sidebar.selectbox(
+    "Theme",
+    ["Light", "Dark"],
+    help="Choose your preferred theme"
+)
+
+# Apply theme
+if theme == "Dark":
+    st.markdown("""
+    <style>
+    .stApp {
+        background-color: #1e1e1e;
+        color: #ffffff;
+    }
+    .sidebar .sidebar-content {
+        background-color: #2d2d2d;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+else:
+    st.markdown("""
+    <style>
+    .stApp {
+        background-color: #ffffff;
+        color: #000000;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
 # Data source selection
 data_source = st.sidebar.radio(
     "Data Source",
@@ -42,6 +73,9 @@ data_source = st.sidebar.radio(
 # Initialize session state
 if 'backtest_results' not in st.session_state:
     st.session_state.backtest_results = {}
+
+# Initialize ticker variable
+ticker = "NONE"
 
 if data_source == "Yahoo Finance":
     # Ticker input
@@ -71,9 +105,20 @@ if data_source == "Yahoo Finance":
     def fetch_data(ticker, start, end):
         try:
             data = yf.download(ticker, start=start, end=end)
-            if data.empty:
+            if data is None or data.empty:
                 st.error(f"No data found for ticker {ticker}")
                 return None
+            
+            # Fix MultiIndex columns from yfinance
+            if isinstance(data.columns, pd.MultiIndex):
+                data.columns = data.columns.droplevel(1)
+            
+            # Ensure we have the required columns
+            required_columns = ['Open', 'High', 'Low', 'Close', 'Volume']
+            if not all(col in data.columns for col in required_columns):
+                st.error(f"Missing required columns. Available: {list(data.columns)}")
+                return None
+                
             return data
         except Exception as e:
             st.error(f"Error fetching data: {str(e)}")
@@ -212,9 +257,9 @@ if data is not None and not data.empty:
     with col1:
         st.metric("Data Points", len(data))
     with col2:
-        st.metric("Start Date", data.index[0].strftime('%Y-%m-%d'))
+        st.metric("Start Date", data.index[0].strftime('%Y-%m-%d') if hasattr(data.index[0], 'strftime') else str(data.index[0]))
     with col3:
-        st.metric("End Date", data.index[-1].strftime('%Y-%m-%d'))
+        st.metric("End Date", data.index[-1].strftime('%Y-%m-%d') if hasattr(data.index[-1], 'strftime') else str(data.index[-1]))
     with col4:
         if data_source == "Yahoo Finance":
             st.metric("Ticker", ticker)
@@ -273,7 +318,7 @@ if data is not None and not data.empty:
                 cerebro.addstrategy(strategy_class, **strategy_params)
                 
                 # Prepare data for backtrader
-                bt_data = bt.feeds.PandasData(dataname=data)
+                bt_data = PandasDataFeed.create_from_dataframe(data)
                 cerebro.adddata(bt_data)
                 
                 # Set initial capital
