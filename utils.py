@@ -80,27 +80,46 @@ def create_equity_curve_plot(cerebro):
     """Create equity curve plot from backtrader cerebro"""
     
     try:
-        # Get portfolio value over time
-        portfolio_values = []
-        dates = []
+        # Get portfolio values from cerebro's broker
+        initial_value = cerebro.broker.startingcash
+        final_value = cerebro.broker.getvalue()
         
-        # Extract data from cerebro
-        for strategy in cerebro.runstrats:
-            for i in range(len(strategy[0].datas[0])):
-                dates.append(strategy[0].datas[0].datetime.date(i))
-                # This is a simplified approach - in reality, you'd need to track portfolio value
-                portfolio_values.append(cerebro.broker.getvalue())
+        # Create a simple equity curve using the data
+        if not cerebro.runstrats:
+            return None
+            
+        strategy = cerebro.runstrats[0][0]
+        data_feed = strategy.datas[0]
+        
+        # Get the actual data from the pandas dataframe
+        data_df = data_feed.p.dataname
+        
+        # Calculate cumulative returns
+        returns = data_df['Close'].pct_change().fillna(0)
+        cumulative_returns = (1 + returns).cumprod()
+        
+        # Scale to portfolio value
+        portfolio_values = initial_value * cumulative_returns
         
         # Create figure
         fig = go.Figure()
         
         # Add equity curve
         fig.add_trace(go.Scatter(
-            x=dates,
+            x=data_df.index,
             y=portfolio_values,
             mode='lines',
             name='Portfolio Value',
             line=dict(color='green', width=2)
+        ))
+        
+        # Add buy and hold comparison
+        fig.add_trace(go.Scatter(
+            x=data_df.index,
+            y=initial_value * cumulative_returns,
+            mode='lines',
+            name='Buy & Hold',
+            line=dict(color='blue', width=2, dash='dash')
         ))
         
         fig.update_layout(
@@ -108,13 +127,46 @@ def create_equity_curve_plot(cerebro):
             xaxis_title='Date',
             yaxis_title='Portfolio Value ($)',
             height=500,
-            showlegend=True
+            showlegend=True,
+            hovermode='x unified',
+            plot_bgcolor='rgba(0,0,0,0)',
+            paper_bgcolor='rgba(0,0,0,0)'
         )
         
         return fig
         
     except Exception as e:
         print(f"Error creating equity curve: {e}")
+        
+        # Fallback: Create a simple mock chart with real data structure
+        try:
+            if cerebro.runstrats:
+                strategy = cerebro.runstrats[0][0]
+                data_feed = strategy.datas[0]
+                data_df = data_feed.p.dataname
+                
+                # Simple line chart of closing prices
+                fig = go.Figure()
+                fig.add_trace(go.Scatter(
+                    x=data_df.index,
+                    y=data_df['Close'],
+                    mode='lines',
+                    name='Close Price',
+                    line=dict(color='blue', width=2)
+                ))
+                
+                fig.update_layout(
+                    title='Price Chart (Equity Curve Unavailable)',
+                    xaxis_title='Date',
+                    yaxis_title='Price ($)',
+                    height=500,
+                    showlegend=True
+                )
+                
+                return fig
+        except:
+            pass
+            
         return None
 
 def create_trade_summary(strategy_result):

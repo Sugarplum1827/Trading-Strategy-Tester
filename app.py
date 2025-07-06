@@ -34,22 +34,77 @@ st.markdown("---")
 st.sidebar.header("🔧 Configuration")
 
 # Theme toggle
-theme = st.sidebar.selectbox(
-    "Theme",
-    ["Light", "Dark"],
-    help="Choose your preferred theme"
-)
+st.sidebar.markdown("### 🎨 Theme")
+col1, col2 = st.sidebar.columns(2)
+
+# Initialize theme state
+if 'theme' not in st.session_state:
+    st.session_state.theme = 'Light'
+
+with col1:
+    if st.button("☀️ Light", key="light_theme"):
+        st.session_state.theme = 'Light'
+
+with col2:
+    if st.button("🌙 Dark", key="dark_theme"):
+        st.session_state.theme = 'Dark'
 
 # Apply theme
-if theme == "Dark":
+if st.session_state.theme == "Dark":
     st.markdown("""
     <style>
     .stApp {
-        background-color: #1e1e1e;
+        background-color: #0e1117;
         color: #ffffff;
     }
-    .sidebar .sidebar-content {
-        background-color: #2d2d2d;
+    .stSidebar {
+        background-color: #262730;
+    }
+    .stSidebar .stSelectbox > div > div {
+        background-color: #3a3d4a;
+        color: #ffffff;
+    }
+    .stSidebar .stTextInput > div > div {
+        background-color: #3a3d4a;
+        color: #ffffff;
+    }
+    .stSidebar .stNumberInput > div > div {
+        background-color: #3a3d4a;
+        color: #ffffff;
+    }
+    .stSidebar .stSlider > div > div {
+        background-color: #3a3d4a;
+    }
+    .stDataFrame {
+        background-color: #262730;
+    }
+    .stMetric {
+        background-color: #262730;
+        border: 1px solid #3a3d4a;
+        border-radius: 8px;
+        padding: 10px;
+    }
+    .stTabs [data-baseweb="tab-list"] {
+        background-color: #262730;
+    }
+    .stTabs [data-baseweb="tab"] {
+        background-color: #3a3d4a;
+        color: #ffffff;
+    }
+    .stTabs [aria-selected="true"] {
+        background-color: #ff6b6b;
+    }
+    .stButton > button {
+        background-color: #ff6b6b;
+        color: #ffffff;
+        border: none;
+        border-radius: 8px;
+    }
+    .stButton > button:hover {
+        background-color: #ff5252;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        color: #ffffff;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -60,8 +115,44 @@ else:
         background-color: #ffffff;
         color: #000000;
     }
+    .stSidebar {
+        background-color: #f0f2f6;
+    }
+    .stMetric {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 10px;
+    }
+    .stTabs [data-baseweb="tab-list"] {
+        background-color: #f8f9fa;
+    }
+    .stTabs [data-baseweb="tab"] {
+        background-color: #ffffff;
+        color: #000000;
+        border: 1px solid #e9ecef;
+    }
+    .stTabs [aria-selected="true"] {
+        background-color: #007bff;
+        color: #ffffff;
+    }
+    .stButton > button {
+        background-color: #007bff;
+        color: #ffffff;
+        border: none;
+        border-radius: 8px;
+    }
+    .stButton > button:hover {
+        background-color: #0056b3;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        color: #000000;
+    }
     </style>
     """, unsafe_allow_html=True)
+
+st.sidebar.markdown(f"**Current Theme:** {st.session_state.theme}")
+st.sidebar.markdown("---")
 
 # Data source selection
 data_source = st.sidebar.radio(
@@ -257,9 +348,17 @@ if data is not None and not data.empty:
     with col1:
         st.metric("Data Points", len(data))
     with col2:
-        st.metric("Start Date", data.index[0].strftime('%Y-%m-%d') if hasattr(data.index[0], 'strftime') else str(data.index[0]))
+        try:
+            start_date_str = data.index[0].strftime('%Y-%m-%d')
+        except:
+            start_date_str = str(data.index[0])[:10]
+        st.metric("Start Date", start_date_str)
     with col3:
-        st.metric("End Date", data.index[-1].strftime('%Y-%m-%d') if hasattr(data.index[-1], 'strftime') else str(data.index[-1]))
+        try:
+            end_date_str = data.index[-1].strftime('%Y-%m-%d')
+        except:
+            end_date_str = str(data.index[-1])[:10]
+        st.metric("End Date", end_date_str)
     with col4:
         if data_source == "Yahoo Finance":
             st.metric("Ticker", ticker)
@@ -278,13 +377,24 @@ if data is not None and not data.empty:
         y=data['Close'],
         mode='lines',
         name='Close Price',
-        line=dict(color='blue')
+        line=dict(color='#00d4aa' if st.session_state.theme == 'Dark' else '#1f77b4')
     ))
+    
+    # Apply theme-specific layout
+    chart_bg = '#0e1117' if st.session_state.theme == 'Dark' else '#ffffff'
+    text_color = '#ffffff' if st.session_state.theme == 'Dark' else '#000000'
+    grid_color = '#3a3d4a' if st.session_state.theme == 'Dark' else '#e5e5e5'
+    
     fig.update_layout(
         title=f"{ticker} Price Chart",
         xaxis_title="Date",
         yaxis_title="Price ($)",
-        height=400
+        height=400,
+        plot_bgcolor=chart_bg,
+        paper_bgcolor=chart_bg,
+        font_color=text_color,
+        xaxis=dict(gridcolor=grid_color),
+        yaxis=dict(gridcolor=grid_color)
     )
     st.plotly_chart(fig, use_container_width=True)
     
